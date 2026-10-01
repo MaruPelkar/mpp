@@ -133,7 +133,6 @@ type Page =
   | { path: '/sdk/typescript/client/Method.tempo.subscription'; render: 'static' }
   | { path: '/sdk/typescript/client/Mppx.create'; render: 'static' }
   | { path: '/sdk/typescript/client/Mppx.preparePayment'; render: 'static' }
-  | { path: '/sdk/typescript/client/Mppx.prepareRequest'; render: 'static' }
   | { path: '/sdk/typescript/client/Mppx.restore'; render: 'static' }
   | { path: '/sdk/typescript/client/Transport.from'; render: 'static' }
   | { path: '/sdk/typescript/client/Transport.http'; render: 'static' }
@@ -198,7 +197,7 @@ type Page =
   | { path: '/sdk/typescript/server/Transport.mcp'; render: 'static' }
   | { path: '/sdk/typescript/server/Transport.mcpSdk'; render: 'static' }
   | { path: '/sdk/typescript/server/Ws.serve'; render: 'static' }
-  | { path: '/sdk/typescript/tempo.mach'; render: 'static' }
+  | { path: '/sdk/typescript/tempo.machineTokenDeployments'; render: 'static' }
   | { path: '/sdk/typescript/x402/express'; render: 'static' }
   | { path: '/sdk/typescript/x402/hono'; render: 'static' }
   | { path: '/sdk/typescript/x402/mcp'; render: 'static' }

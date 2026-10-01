@@ -10,19 +10,19 @@ Your server issues a **Challenge** to describe the payment required for a resour
 ## Structure
 
 ```http
-WWW-Authenticate: Payment id="qB3wErTyU7iOpAsD9fGhJk", realm="mpp.dev", method="tempo", intent="charge", request="eyJhbW91bnQiOiIxMDAwIiwiY3VycmVuY3kiOiIweDIwYzAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJyZWNpcGllbnQiOiIweGYzOUZkNmU1MWFhZDg4RjZGNGNlNmFCODgyNzI3OWNmZkZiOTIyNjYifQ", expires="2027-01-15T12:05:00Z", header="Payment-Authorization", opaque="eyJyb3V0ZSI6Ii92MS9zZWFyY2gifQ"
+WWW-Authenticate: Payment id="qB3wErTyU7iOpAsD9fGhJk", realm="mpp.dev", method="tempo", intent="charge", request="eyJhbW91bnQiOiIxMDAwIiwiY3VycmVuY3kiOiIweDIwYzAwMDAwMDAwMDAwMDAwMDAwMDAwMDZhMzdEQTVDOTk2ODc0QkUiLCJyZWNpcGllbnQiOiIweGYzOUZkNmU1MWFhZDg4RjZGNGNlNmFCODgyNzI3OWNmZkZiOTIyNjYifQ", expires="2027-01-15T12:05:00Z", header="Payment-Authorization", opaque="eyJyb3V0ZSI6Ii92MS9zZWFyY2gifQ"
 ```
 
-The token address below is pathUSD on Tempo mainnet. The identifiers and transaction hash in these examples are illustrative.
+The token address below is OUSD on Tempo mainnet. The identifiers and transaction hash in these examples are illustrative.
 
 ### Required parameters
 
 | Parameter | Description |
 |-----------|-------------|
 | `id` | Unique Challenge identifier, cryptographically bound to Challenge parameters |
-| `realm` | Protection space identifier (typically the API domain) |
-| `method` | Payment method identifier (such as `tempo` or `stripe`) |
 | `intent` | Payment intent type (such as `charge` or `session`) |
+| `method` | Payment method identifier (such as `tempo` or `stripe`) |
+| `realm` | Protection space identifier (typically the API domain) |
 | `request` | Base64url-encoded JCS JSON with payment details |
 
 ### Optional parameters
@@ -30,7 +30,7 @@ The token address below is pathUSD on Tempo mainnet. The identifiers and transac
 | Parameter | Description |
 |-----------|-------------|
 | `description` | Human-readable description of what's being paid for |
-| `digest` | Request body digest used to bind a body-bearing request |
+| `digest` | Request-body digest in `sha-256=:<base64>:` format |
 | `expires` | ISO 8601 timestamp when the Challenge expires |
 | `header` | HTTP field for the Credential; defaults to `Authorization` when absent |
 | `opaque` | Base64url-encoded JCS JSON for server-defined correlation data |
@@ -46,7 +46,7 @@ The `request` parameter contains method-specific payment details encoded as base
 ```json [Decoded request object]
 {
   "amount": "1000",
-  "currency": "0x20c0000000000000000000000000000000000000",
+  "currency": "0x20c0000000000000000000006a37DA5C996874BE",
   "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 }
 ```
@@ -66,7 +66,7 @@ Common fields across payment methods:
 | Field | Description |
 |-------|-------------|
 | `amount` | Payment amount in base units (for example, cents for USD) |
-| `currency` | Currency code (`usd`) or token address (`0x20c0...`) |
+| `currency` | Currency code (`usd`) or token address (`0x20c0000000000000000000006a37DA5C996874BE`) |
 | `recipient` | Payment destination in method-native format |
 
 ## Multiple Challenges
@@ -96,7 +96,7 @@ Typical binding includes:
 - `header` when advertised
 - `opaque`
 
-For HMAC-bound IDs without `header`, the canonical input sequence remains `realm | method | intent | request | expires | digest | opaque`. When a Challenge advertises `header`, insert its value before the final `opaque` slot. Use an empty string for an absent optional slot.
+For HMAC-bound IDs, use `realm | method | intent | request | expires | digest | opaque` when `header` is absent. When `header` is present, insert it before `opaque`: `realm | method | intent | request | expires | digest | header | opaque`. Use an empty string for any absent optional value other than `header`, whose slot is omitted entirely when absent.
 
 For stateless verification, use an [HMAC-bound](https://en.wikipedia.org/wiki/HMAC) Challenge ID. Stateful servers can store the expected Challenge parameters by ID and compare them when verifying the Credential.
 

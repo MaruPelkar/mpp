@@ -4,6 +4,7 @@ packages:
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
   - mppx
+  - viem@2.57.1
   - vocs
   - vite
   - waku
@@ -25,6 +26,7 @@ trustPolicy: no-downgrade
 trustPolicyExclude:
   - semver@6.3.1
 overrides:
+  'undici@>=7.28.0 <7.29.1': 7.29.1
   "@babel/core": 7.29.6
   # The latest Scalar json-magic still pins vulnerable undici 7.24.4.
   "@scalar/json-magic>undici": ^7.29.0

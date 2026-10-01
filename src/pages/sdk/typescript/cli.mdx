@@ -66,6 +66,12 @@ $ mppx https://api.example.com/paid --protocol mpp
 
 x402 payments support compatible EVM `exact` Challenges and use the same account as EVM charge payments. Configure it with `--account`, `MPPX_ACCOUNT`, or `MPPX_PRIVATE_KEY`.
 
+## Request attribution
+
+The CLI sends `mppx/<version>` as its default `User-Agent`. In recognized coding-agent environments, it appends an attribution token such as `AIAgent/codex_cli` or `AIAgent/claude_code`. Detection covers Antigravity, Claude Code, Cline, Codex CLI, Cursor, Gemini CLI, OpenCode, and OpenClaw.
+
+Pass `--user-agent` to replace the complete default value, including automatic agent attribution.
+
 ## Validate command
 
 Use `mppx validate` to automatically verify an MPP server implementation end-to-end. The command tests `/llms.txt`, OpenAPI discovery, Challenge formats, error handling, and the full payment flow. A missing, empty, or non-text `/llms.txt` appears as a non-blocking `suggested` result.
@@ -82,7 +88,7 @@ $ mppx validate https://api.example.com --endpoint GET:/quotes --query symbol=ET
 ```
 
 :::note[End-to-end payments]
-Run `mppx validate` against both test and production versions of your server. On testnets and Stripe test mode, the CLI automatically completes roundtrip test payments. On mainnets, the CLI can complete real payments from the local `mppx` wallet.
+Run `mppx validate` against both test and production versions of your server. On testnets and Stripe test mode, the CLI automatically completes roundtrip test payments. For Tempo testnet Sessions, it follows the streaming payment flow and funds the session operator through the faucet so settlement can complete. On mainnets, the CLI can complete real payments from the local `mppx` wallet.
 :::
 
 When your config declares payment methods, `mppx validate` uses their signing accounts, approval hooks, chain policies, and Session stores instead of substituting built-in methods or preflighting the local CLI wallet.
@@ -215,7 +221,7 @@ Extensions run in configuration order for paid requests, `mppx sign`, `mppx vali
 Sign a payment Challenge and output its serialized Payment Credential value without making a request. Pass the complete `WWW-Authenticate` value with `--challenge`. Send the result in the field advertised by `header`, or `Authorization` when omitted.
 
 ```bash [test.sh]
-$ challenge='Payment id="abc", realm="api.example.com", method="tempo", intent="charge", request="eyJhbW91bnQiOiIwIiwiY3VycmVuY3kiOiIweDIwYzAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJyZWNpcGllbnQiOiIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIn0"'
+$ challenge='Payment id="abc", realm="api.example.com", method="tempo", intent="charge", request="eyJhbW91bnQiOiIwIiwiY3VycmVuY3kiOiIweDIwYzAwMDAwMDAwMDAwMDAwMDAwMDAwMDZhMzdEQTVDOTk2ODc0QkUiLCJyZWNpcGllbnQiOiIweGYzOUZkNmU1MWFhZDg4RjZGNGNlNmFCODgyNzI3OWNmZkZiOTIyNjYifQ"'
 $ mppx sign --challenge "$challenge"
 ```
 
